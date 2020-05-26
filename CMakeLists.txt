@@ -93,7 +93,7 @@ add_library( imgui
 )
 
 target_link_libraries( imgui PRIVATE imgui-cppwarnings imgui-cppfeatures Freetype::Freetype)
-target_include_directories( imgui INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} )
+target_include_directories( imgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} )
 
 #if( BUILD_PLATFORM STREQUAL "osx" )
 #  include ( cmake/ios.toolchain.cmake )
