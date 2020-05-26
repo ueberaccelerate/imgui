@@ -2,6 +2,8 @@ cmake_minimum_required( VERSION 3.12 )
 project ( imgui )
 
 option ( BUILD_SHARED_LIBS "The shared lib is " OFF )
+option ( IMGUI_BUILD_EXAMPLES "The examples lib is " ON )
+
 set    ( BUILD_PLATFORM    "glfw" CACHE STRING "The platform lib is " )
 
 include ( cmake/warnings.cmake )
@@ -54,13 +56,14 @@ if( BUILD_PLATFORM STREQUAL "glfw" )
 
     ${CMAKE_CURRENT_SOURCE_DIR}/examples/imgui_impl_opengl3.cpp
   )
+  if( IMGUI_BUILD_EXAMPLES )
+    add_executable ( glfw_example 
+      ${CMAKE_CURRENT_SOURCE_DIR}/examples/example_glfw_opengl3/main.cpp
+    )
 
-  add_executable ( glfw_example 
-    ${CMAKE_CURRENT_SOURCE_DIR}/examples/example_glfw_opengl3/main.cpp
-  )
-
-  target_compile_definitions( glfw_example PRIVATE IMGUI_IMPL_OPENGL_LOADER_GL3W=1)
-  target_link_libraries( glfw_example PRIVATE imgui ${GLFW_DEPENDENCY}) 
+    target_compile_definitions( glfw_example PRIVATE IMGUI_IMPL_OPENGL_LOADER_GL3W=1)
+    target_link_libraries( glfw_example PRIVATE imgui ${GLFW_DEPENDENCY}) 
+  endif()
 endif()
 
 
