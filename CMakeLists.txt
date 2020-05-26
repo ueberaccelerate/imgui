@@ -2,7 +2,7 @@ cmake_minimum_required( VERSION 3.12 )
 project ( imgui )
 
 option ( BUILD_SHARED_LIBS "The shared lib is " OFF )
-set    ( BUILD_PLATFORM    "osx" CACHE STRING "The platform lib is " )
+set    ( BUILD_PLATFORM    "glfw" CACHE STRING "The platform lib is " )
 
 include ( cmake/warnings.cmake )
 
@@ -12,8 +12,6 @@ add_library( imgui-cppfeatures INTERFACE )
 set_project_warinigs( imgui-cppwarnings )
 target_compile_features( imgui-cppfeatures INTERFACE cxx_std_17 )
 target_include_directories( imgui-cppfeatures INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} )
-
-find_package( FreeType )
 
 add_library( imgui 
 # headers
@@ -35,6 +33,85 @@ add_library( imgui
 ./imgui.cpp
 ./imgui_demo.cpp
 ./imgui_draw.cpp
+
+)
+
+include ( cmake/dependency.cmake )
+set_dependency ( imgui PRIVATE )
+
+target_link_libraries( imgui PRIVATE imgui-cppwarnings imgui-cppfeatures )
+target_include_directories( imgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} )
+target_include_directories( imgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/examples )
+
+
+
+
+
+if( BUILD_PLATFORM STREQUAL "glfw" )
+  target_sources(imgui PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/examples/imgui_impl_glfw.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/examples/imgui_impl_glfw.cpp
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/examples/imgui_impl_opengl3.cpp
+  )
+
+  add_executable ( glfw_example 
+    ${CMAKE_CURRENT_SOURCE_DIR}/examples/example_glfw_opengl3/main.cpp
+  )
+
+  target_compile_definitions( glfw_example PRIVATE IMGUI_IMPL_OPENGL_LOADER_GL3W=1)
+  target_link_libraries( glfw_example PRIVATE imgui ${GLFW_DEPENDENCY}) 
+endif()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#if( BUILD_PLATFORM STREQUAL "osx" )
+#  include ( cmake/ios.toolchain.cmake )
+#
+#  set ( BUILD_RENDERER "metal" CACHE STRING "The lib renderer is " )
+#  
+#  if ( BUILD_RENDERER STREQUAL "metal" )
+#    target_sources(imgui PRIVATE
+#      ${CMAKE_CURRENT_SOURCE_DIR}/examples/imgui_impl_osx.h
+#      ${CMAKE_CURRENT_SOURCE_DIR}/examples/imgui_impl_metal.h
+#
+#      ${CMAKE_CURRENT_SOURCE_DIR}/examples/imgui_impl_osx.mm
+#      ${CMAKE_CURRENT_SOURCE_DIR}/examples/imgui_impl_metal.mm
+#    )
+#  endif()
+#
+#
+#endif()
+
+#if ( BUILD_EXAMPLES )
+#  include ( cmake/build_example.cmake )
+#  build_example(sdl_vulkan)
+#  build_example(glfw_opengl2)
+#  build_example(null)
+#  build_example(sdl_vulkan)
+#  build_example(sdl_vulkan)
+#  build_example(sdl_vulkan)
+#  build_example(sdl_vulkan)
+#  build_example(sdl_vulkan)
+#  build_example(sdl_vulkan)
+#endif()
 
 #./examples/imgui_impl_allegro5.h
 #./examples/imgui_impl_win32.h
@@ -90,39 +167,3 @@ add_library( imgui
 #./examples/imgui_impl_glfw.cpp
 #./examples/example_win32_directx12/main.cpp
 #./examples/imgui_impl_sdl.cpp
-)
-
-target_link_libraries( imgui PRIVATE imgui-cppwarnings imgui-cppfeatures Freetype::Freetype)
-target_include_directories( imgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} )
-
-#if( BUILD_PLATFORM STREQUAL "osx" )
-#  include ( cmake/ios.toolchain.cmake )
-#
-#  set ( BUILD_RENDERER "metal" CACHE STRING "The lib renderer is " )
-#  
-#  if ( BUILD_RENDERER STREQUAL "metal" )
-#    target_sources(imgui PRIVATE
-#      ${CMAKE_CURRENT_SOURCE_DIR}/examples/imgui_impl_osx.h
-#      ${CMAKE_CURRENT_SOURCE_DIR}/examples/imgui_impl_metal.h
-#
-#      ${CMAKE_CURRENT_SOURCE_DIR}/examples/imgui_impl_osx.mm
-#      ${CMAKE_CURRENT_SOURCE_DIR}/examples/imgui_impl_metal.mm
-#    )
-#  endif()
-#
-#
-#endif()
-
-#if ( BUILD_EXAMPLES )
-#  include ( cmake/build_example.cmake )
-#  build_example(sdl_vulkan)
-#  build_example(glfw_opengl2)
-#  build_example(null)
-#  build_example(sdl_vulkan)
-#  build_example(sdl_vulkan)
-#  build_example(sdl_vulkan)
-#  build_example(sdl_vulkan)
-#  build_example(sdl_vulkan)
-#  build_example(sdl_vulkan)
-#endif()
-
