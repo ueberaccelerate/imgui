@@ -113,7 +113,11 @@ int main(int, char**)
 
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init(glsl_version);
+    if (!ImGui_ImplOpenGL3_Init(glsl_version))
+    {
+        fprintf(stderr, "Failed to initialize ImGui!\n");
+        return 1;
+    }
 
     // Load Fonts
     // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.

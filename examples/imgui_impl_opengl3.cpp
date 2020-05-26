@@ -145,6 +145,13 @@ bool    ImGui_ImplOpenGL3_Init(const char* glsl_version)
     glGetIntegerv(GL_MAJOR_VERSION, &major);
     glGetIntegerv(GL_MINOR_VERSION, &minor);
     g_GlVersion = major * 100 + minor * 10;
+
+#ifdef GL_SAMPLER_BINDING
+    const bool gl_330_cond = g_GlVersion >= 330;
+    IM_ASSERT(gl_330_cond);
+    if(!gl_330_cond)
+        return false;
+#endif
 #else
     g_GlVersion = 200; // GLES 2
 #endif
