@@ -39,7 +39,7 @@ add_library( imgui
 )
 
 include ( cmake/dependency.cmake )
-set_dependency ( imgui PRIVATE )
+set_dependency ( imgui PUBLIC)
 
 target_link_libraries( imgui PRIVATE imgui-cppwarnings imgui-cppfeatures )
 target_include_directories( imgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} )
@@ -62,7 +62,7 @@ if( BUILD_PLATFORM STREQUAL "glfw" )
     )
 
     target_compile_definitions( glfw_example PRIVATE IMGUI_IMPL_OPENGL_LOADER_GL3W=1)
-    target_link_libraries( glfw_example PRIVATE imgui ${GLFW_DEPENDENCY}) 
+    target_link_libraries( glfw_example PRIVATE imgui ) 
   endif()
 endif()
 
